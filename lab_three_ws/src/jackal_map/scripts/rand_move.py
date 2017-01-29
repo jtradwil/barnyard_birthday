@@ -33,8 +33,8 @@ linear_max  =  1
 
 # Constants for laser averaging
 front_delta = 15
-side_ang = 45
-side_delta = 5
+side_ang = 30
+side_delta = 10
 side_thresh = 2
 
 # Radian to degree function
@@ -47,7 +47,9 @@ def getSum(start, end, data):
     angSum = float(0.0)
     index = start
     while index < end :
-        angSum = angSum + data.ranges[index]
+        if data.ranges[index] < 15:
+            angSum = angSum + data.ranges[index]
+            
         index = index + 1
         
     angSum = float(angSum) / float(end-start)
@@ -78,17 +80,17 @@ def Callback(data):
     
     # Too close in front, turn left and slowly back up  
     if frontAve < 1 :
-        angular_min = 0
+        angular_min = 0.25
         angular_max = 0.5 
         linear_min  = -0.05 
         linear_max  = 0
       
     # All Clear, randomly drive forward with varying turn  
     elif (frontAve > 4) and (leftAve > side_thresh) and (rightAve > side_thresh) :
-        angular_min = -0.75
-        angular_max = 0.75
+        angular_min = -1
+        angular_max = 1
         linear_min  = 0.75 
-        linear_max  = 1.25
+        linear_max  = 1
         
     # Close to a wall on one side, turn to side with most time
     else :
