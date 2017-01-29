@@ -26,6 +26,7 @@ import os
 start_time = 0
 
 # Global variables for random bounds
+scale = 1
 angular_min = -1 
 linear_min  = -1 
 angular_max =  1 
@@ -34,8 +35,8 @@ linear_max  =  1
 # Constants for laser averaging
 front_delta = 15
 side_ang = 30
-side_delta = 10
-side_thresh = 2
+side_delta = 15
+side_thresh = 1.5
 
 # Radian to degree function
 def toAng(rad):
@@ -56,6 +57,18 @@ def getSum(start, end, data):
     
     return angSum
 
+# Averaged Sum of scan points function
+def getMin(start, end, data):
+    angSum = float(0.0)
+    index = start + 1
+    minScan = data.ranges[start]
+    while index < end :
+        if data.ranges[index] < minScan:
+            prev = data.ranges[index]
+            
+        index = index + 1
+    
+    return minScan
 
 # define callback for twist
 def Callback(data):
@@ -69,9 +82,9 @@ def Callback(data):
     zeroOffset = int(front_delta / toAng(data.angle_increment))
     
     # Compute averages for left, right, and front laser scan spans
-    leftAve = getSum(leftAng, leftAng + sideOffset, data)
-    rightAve = getSum(rightAng - sideOffset, rightAng, data)
-    frontAve = getSum(zeroAng - zeroOffset, zeroAng + zeroOffset, data)
+    leftAve = getMin(leftAng, leftAng + sideOffset, data)
+    rightAve = getMin(rightAng - sideOffset, rightAng, data)
+    frontAve = getMin(zeroAng - zeroOffset, zeroAng + zeroOffset, data)
     
     # Output for monitoring
     rospy.loginfo('\t%3.4f  -  %3.4f  -  %3.4f',leftAve,frontAve,rightAve)
@@ -80,30 +93,30 @@ def Callback(data):
     
     # Too close in front, turn left and slowly back up  
     if frontAve < 1 :
-        angular_min = 0.25
-        angular_max = 0.5 
-        linear_min  = -0.05 
-        linear_max  = 0
+        angular_min = 0.25 * scale
+        angular_max = 0.5  * scale
+        linear_min  = -0.05 * scale 
+        linear_max  = 0 * scale
       
     # All Clear, randomly drive forward with varying turn  
-    elif (frontAve > 4) and (leftAve > side_thresh) and (rightAve > side_thresh) :
-        angular_min = -1
-        angular_max = 1
-        linear_min  = 0.75 
-        linear_max  = 1
+    elif (frontAve > 2) and (leftAve > side_thresh) and (rightAve > side_thresh) :
+        angular_min = -1.25 * scale
+        angular_max = 1.25 * scale
+        linear_min  = 0.50 * scale
+        linear_max  = 1.0 * scale
         
     # Close to a wall on one side, turn to side with most time
     else :
         if leftAve > rightAve :
-            angular_min = 0.25
-            angular_max = 0.5
-            linear_min  = 0.25
-            linear_max  = 0.50
+            angular_min = 0.75 * scale
+            angular_max = 1.0 * scale
+            linear_min  = 0.25 * scale
+            linear_max  = 0.75 * scale
         else :
-            angular_min = -0.5
-            angular_max = -0.25
-            linear_min  = 0.25
-            linear_max  = 0.50
+            angular_min = -1.0 * scale
+            angular_max = -0.75 * scale
+            linear_min  = 0.25 * scale
+            linear_max  = 0.75 * scale
 
 
 # define setup and run routine
