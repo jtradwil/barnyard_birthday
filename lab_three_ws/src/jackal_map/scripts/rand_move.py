@@ -147,8 +147,6 @@ def setup():
     randLin = float(0.0)
     randAng = float(0.0)
     
-    map_name  = rospy.get_param("/jackal_map/map_filename")
-
     # loop
     while not time.time()-start_time>600:
 
@@ -178,6 +176,7 @@ def setup():
     #start save map
     package ='map_server'
     executable ='map_saver'
+    map_name  = rospy.get_param("/jackal_map/map_filename")
     node = roslaunch.core.Node(package, executable, args="-f "+str(os.path.dirname(os.path.realpath(__file__)))+map_name)
     
 	
