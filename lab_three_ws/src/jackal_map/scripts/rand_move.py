@@ -171,8 +171,7 @@ def setup():
         pub = rospy.Publisher("/jackal_velocity_controller/cmd_vel", Twist, queue_size=10)
 
         # rospy.loginfo('linear_min=%d  linear_max=%d  angular_min=%d  angular_max=%d'%(linear_min, linear_max, angular_min, angular_max))
-		# rospy.loginfo("random movement x = {} z = {}".format(motion.linear.x, motion.angular.z))
-		# rospy.logdebug("drunk mode x = {} z = {}".format(motion.linear.x, motion.angular.z))
+        # rospy.loginfo("random movement x = {} z = {}".format(motion.linear.x, motion.angular.z))
 
         rate.sleep()
 
@@ -189,7 +188,7 @@ def setup():
     while process.is_alive():
         print process.is_alive()
     #process.stop()
-    rospy.loginfo("-f "+str(os.path.dirname(os.path.realpath(__file__)))+"/myfile")
+    rospy.loginfo("-f "+str(os.path.dirname(os.path.realpath(__file__)))+map_name)
 
 
 # standard ros boilerplate
