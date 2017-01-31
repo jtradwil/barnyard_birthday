@@ -35,7 +35,6 @@
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
 	      args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 1.0" />
 	      
-	      
  <node pkg="move_base" type="move_base" respawn="false" name="move_base">
 
   <rosparam file="$(find jackal_map)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
@@ -101,7 +100,7 @@
     <!-- Number of particles in the filter. default 30        -->
     <param name="particles" value="20"/>
 
-<!-- Initial map size  -->
+    <!-- Initial map size  -->
     <param name="xmin" value="-10.0"/>
     <param name="ymin" value="-10.0"/>
     <param name="xmax" value="10.0"/>
@@ -123,7 +122,6 @@
     
     
   <node pkg="jackal_map" name="rand_move" type="rand_move.py" output="screen" launch-prefix="xterm -e"/>
-    
-    
-    
+     <rosparam file="$(find jackal_map)/config/config.yaml" command="load" ns="jackal_map" />
+ 
 </launch>
