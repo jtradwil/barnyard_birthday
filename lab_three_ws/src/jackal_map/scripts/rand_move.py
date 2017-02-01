@@ -148,7 +148,7 @@ def setup():
     randAng = float(0.0)
     
     # loop
-    while not time.time()-start_time>60:
+    while not time.time()-start_time>600:
 
         # generate random movement mapping at random interval
         if count < countLimit :
